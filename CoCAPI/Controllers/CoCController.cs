@@ -99,13 +99,16 @@ namespace CoCAPI.Controllers
         [Route("api/coc")]
         public CoCResult Post([FromBody] CocRequest value)
         {
-            string json = JsonConvert.SerializeObject(value.AnswerList);
+            // string json = JsonConvert.SerializeObject(value.AnswerList);
+            string json = JsonConvert.SerializeObject(value);
             Debug.WriteLine(json);
             string jsonformatted = JValue.Parse(json).ToString(Formatting.Indented);
             Debug.WriteLine(jsonformatted);
-            //Debug.WriteLine(value.Num);
-            //Debug.WriteLine(value.Str);
-            var alist = JsonConvert.DeserializeObject<List<Question>>(json);
+            // var alist = JsonConvert.DeserializeObject<List<Question>>(json);
+            var obj = JsonConvert.DeserializeObject<CocRequest>(json);
+            var alist = obj.AnswerList;
+            Debug.WriteLine("num - " + obj.SomeNum);
+            Debug.WriteLine("str - " + obj.SomeStr);
             int one = 0;
             int two = 0;
             int three = 0;

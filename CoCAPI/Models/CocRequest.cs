@@ -7,8 +7,8 @@ namespace CoCAPI.Models
 {
     public class CocRequest
     {
-        //public int Num { get; set; }
-        //public string Str { get; set; }
+        public int SomeNum { get; set; }
+        public string SomeStr { get; set; }
         public List<Question> AnswerList { get; set; }
     }
 }
