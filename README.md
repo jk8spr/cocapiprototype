@@ -2,6 +2,9 @@
 
 .Net Core 2.2 (have 2.2 sdk installed)
 
+Here is a link to an Angular frontend that consumes this API
+http://coctestharness.s3-website-us-east-1.amazonaws.com
+
 Right now we have two endpoints a 
 GET that determines the questions to return from the dates and carrier passed in
     and 
