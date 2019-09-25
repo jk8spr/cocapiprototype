@@ -5,7 +5,7 @@
 Right now we have two endpoints a 
 GET that determines the questions to return from the dates and carrier passed in
     and 
-POST that takes a CocRequest object that includes a List<Question> AnswerList from the body 
+POST that takes a CocRequest object that includes a List<<Question>> AnswerList from the body 
     and returns a CocResult object with the results of the scoring
     
 Example GET
