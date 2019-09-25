@@ -1,4 +1,7 @@
 # cocapiprototype (WIP)
+
+.Net Core 2.2 (have 2.2 sdk installed)
+
 Right now we have two endpoints a 
 GET that determines the questions to return from the dates and carrier passed in
     and 
