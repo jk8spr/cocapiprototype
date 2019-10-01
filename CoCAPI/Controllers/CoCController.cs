@@ -20,7 +20,7 @@ namespace CoCAPI.Controllers
 
         [HttpGet]
         [Route("api/coc")]
-        public IEnumerable<Question> Get([FromQuery]string ProgramStartDate, [FromQuery]string EntryDate, [FromQuery]string DateOfService, [FromQuery]string Client)
+        public IEnumerable<Question> Get([FromQuery]string ProgramStartDate, [FromQuery]string EntryDate, [FromQuery]string DateOfService, [FromQuery]string Client, [FromQuery]int TreatmentType)
         {
             string echo = "N/A";
             string exclude = "";
@@ -28,56 +28,70 @@ namespace CoCAPI.Controllers
             List<Question> lQuestions = new List<Question>();
             try
             {
-                DateTime dEntryDate = DateTime.Parse(EntryDate);
-                DateTime dDateOfService = DateTime.Parse(DateOfService);
-                DateTime dProgramStartDate = DateTime.Parse(ProgramStartDate);
-                DateTime dProgramStartDatePlus180 = dProgramStartDate.AddDays(180);
-                DateTime dProgramStartDateMinus180 = dProgramStartDate.AddDays(-180);
-                // figure out what scenario we have from the dates passed in
-                if (Client.StartsWith("V"))
+                if (TreatmentType == 0) // New
+                { }
+                else if (TreatmentType == 1) // Extension
                 {
-                    echo = "12345 Vanilla" + Environment.NewLine;
-                    exclude = "AB";
+                    exclude = "2";
                     ShowQuestions = true;
                 }
-                else if (dEntryDate > dProgramStartDatePlus180) // scenario 1 & 2
+                else if (TreatmentType == 2) // Continuation
                 {
-                    if (dDateOfService < dProgramStartDate) // hard stop
-                        echo = "Hard Stop" + Environment.NewLine;
-                    else if (dDateOfService >= dProgramStartDate)
+                    DateTime dEntryDate = DateTime.Parse(EntryDate);
+                    DateTime dDateOfService = DateTime.Parse(DateOfService);
+                    DateTime dProgramStartDate = DateTime.Parse(ProgramStartDate);
+                    DateTime dProgramStartDatePlus180 = dProgramStartDate.AddDays(180);
+                    DateTime dProgramStartDateMinus180 = dProgramStartDate.AddDays(-180);
+                    if (dEntryDate <= dProgramStartDatePlus180)
                     {
-                        echo = "A12345" + Environment.NewLine;
-                        exclude = "B";
+                        exclude = "2345";
                         ShowQuestions = true;
                     }
-                    else
-                        echo = "N/A" + Environment.NewLine;
+                    else if (Client.StartsWith("B") && dEntryDate > dProgramStartDate) // BCBSMA
+                    {
+                        exclude = "1345";
+                        ShowQuestions = true;
+                    }
+                    // figure out what scenario we have from the dates passed in
+                    //if (dEntryDate > dProgramStartDatePlus180) // scenario 1 & 2
+                    //{
+                    //    if (dDateOfService < dProgramStartDate) // hard stop
+                    //        echo = "Hard Stop" + Environment.NewLine;
+                    //    else if (dDateOfService >= dProgramStartDate)
+                    //    {
+                    //        echo = "A12345" + Environment.NewLine;
+                    //        exclude = "B";
+                    //        ShowQuestions = true;
+                    //    }
+                    //    else
+                    //        echo = "N/A" + Environment.NewLine;
+                    //}
+                    //else if (dEntryDate <= dProgramStartDatePlus180) // scenario 3, 4 & 5
+                    //{
+                    //    if (dDateOfService < dProgramStartDate) //scenario 3
+                    //    {
+                    //        echo = "B12345" + Environment.NewLine;
+                    //        exclude = "A";
+                    //        ShowQuestions = true;
+                    //    }
+                    //    else if (dDateOfService >= dProgramStartDate &&
+                    //        dDateOfService <= dProgramStartDatePlus180) //scenario 4 (inside client administrative period)
+                    //    {
+                    //        echo = "12345" + Environment.NewLine;
+                    //        exclude = "AB";
+                    //        ShowQuestions = true;
+                    //    }
+                    //    else if (dDateOfService >= dProgramStartDatePlus180) //scenario 5 (outside client administrative period)
+                    //    {
+                    //        echo = "A12345" + Environment.NewLine;
+                    //        exclude = "B";
+                    //        ShowQuestions = true;
+                    //    }
+                    //    else
+                    //        echo = "N/A" + Environment.NewLine;
+                    //}
+                    // if we need questions load em and remove our excluded questions
                 }
-                else if (dEntryDate <= dProgramStartDatePlus180) // scenario 3, 4 & 5
-                {
-                    if (dDateOfService < dProgramStartDate) //scenario 3
-                    {
-                        echo = "B12345" + Environment.NewLine;
-                        exclude = "A";
-                        ShowQuestions = true;
-                    }
-                    else if (dDateOfService >= dProgramStartDate &&
-                        dDateOfService <= dProgramStartDatePlus180) //scenario 4 (inside client administrative period)
-                    {
-                        echo = "12345" + Environment.NewLine;
-                        exclude = "AB";
-                        ShowQuestions = true;
-                    }
-                    else if (dDateOfService >= dProgramStartDatePlus180) //scenario 5 (outside client administrative period)
-                    {
-                        echo = "A12345" + Environment.NewLine;
-                        exclude = "B";
-                        ShowQuestions = true;
-                    }
-                    else
-                        echo = "N/A" + Environment.NewLine;
-                }
-                // if we need questions load em and remove our excluded questions
                 if (ShowQuestions)
                 {
                     // get our full list
@@ -89,6 +103,7 @@ namespace CoCAPI.Controllers
                     foreach (Question q in lQuestions)
                     { echo += q.QuexId; }
                 }
+
             }
             catch (Exception ex) { echo += ex.Message; }
             return lQuestions;
@@ -107,8 +122,8 @@ namespace CoCAPI.Controllers
             // var alist = JsonConvert.DeserializeObject<List<Question>>(json);
             var obj = JsonConvert.DeserializeObject<CocRequest>(json);
             var alist = obj.AnswerList;
-            Debug.WriteLine("num - " + obj.SomeNum);
-            Debug.WriteLine("str - " + obj.SomeStr);
+            //Debug.WriteLine("num - " + obj.SomeNum);
+            //Debug.WriteLine("str - " + obj.SomeStr);
             int one = 0;
             int two = 0;
             int three = 0;
@@ -116,7 +131,7 @@ namespace CoCAPI.Controllers
             result.LevelOne = "Not Met";
             result.LevelTwo = "Not Met";
             result.LevelThree = "Not Met";
-            result.CoCDetermination = "Not CoC";
+            result.CoCDetermination = "Not Met";
             result.BadgeFlag = false;
 
             foreach (Question a in alist)
@@ -134,13 +149,24 @@ namespace CoCAPI.Controllers
                     three++;
                 }
             }
-            if (one > 0) result.LevelOne = "Met";
-            if (two > 1) result.LevelTwo = "Met";
-            if (three > 0) result.LevelThree = "Met";
-            if (result.LevelOne=="Met" && result.LevelTwo== "Met" && result.LevelThree == "Met")
-                result.CoCDetermination = "Admin";
-            else if (result.LevelTwo == "Met" && result.LevelThree == "Met")
+
+            result.LevelOne = "Not Met";
+            result.LevelTwo = "Not Met";
+            result.CoCDetermination = "Not Met";
+            if (obj.TreatmentType == 0)
+                result.CoCDetermination = "N/A";
+            else if (obj.TreatmentType == 1 && one > 0 && two > 0)
+            {
+                result.LevelOne = "Met";
                 result.CoCDetermination = "Clinical";
+            }
+            else if (obj.TreatmentType == 2 && one > 0)
+            {
+                result.LevelOne = "Met";
+                result.LevelTwo = "Met";
+                result.CoCDetermination = "Admin";
+            }
+
             if (!result.CoCDetermination.StartsWith("N"))
                 result.BadgeFlag = true;
 
@@ -165,7 +191,7 @@ namespace CoCAPI.Controllers
 
         private IEnumerable<Question> GetQuestionsList()
         {
-            string json = System.IO.File.ReadAllText(@"content\attestations.json");
+            string json = System.IO.File.ReadAllText(@"content\attestationsV2.json");
             var qlist = JsonConvert.DeserializeObject<List<Question>>(json);
 
             return qlist;
