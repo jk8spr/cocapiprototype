@@ -1,13 +1,13 @@
 [
   {
     "id": 101,
-    "quextext": "Do either of these apply: \n *    This members treatment did not previously require prior-authorization from BCBS Massachusetts or their prior insurance carrier, and benefits were received? \n *    The services been requested, approved, and rendered for this member in the past?",
+    "quextext": "Do either of these apply: \n *    This members treatment did not previously require prior-authorization from [client] or their prior insurance carrier, and benefits were received? \n *    The services been requested, approved, and rendered for this member in the past?",
     "level": "1",
     "quexid": "1"
   },
   {
     "id": 200,
-    "quextext": "This member has transitioned to BCBSMA coverage within the past six months.",
+    "quextext": "This member has transitioned to [client] coverage within the past six months.",
     "level": "1",
     "quexid": "2"
   },

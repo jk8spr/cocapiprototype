@@ -47,7 +47,7 @@ namespace CoCAPI.Controllers
                         exclude = "345";
                         ShowQuestions = true;
                     }
-                    else if (Client.StartsWith("B") && dEntryDate > dProgramStartDate) // BCBSMA
+                    else if (Client.Equals("BCBSMA") && dEntryDate > dProgramStartDate) // BCBSMA
                     {
                         exclude = "345";
                         ShowQuestions = true;
@@ -98,10 +98,16 @@ namespace CoCAPI.Controllers
                     lQuestions = GetQuestionsList().ToList();
                     // remove our excludes
                     foreach (Char c in exclude)
-                    { lQuestions.Remove(lQuestions.First(x => x.QuexId == c.ToString())); }
+                    {
+                        lQuestions.Remove(lQuestions.First(x => x.QuexId == c.ToString()));
+                    }
                     // do this just for logging the sequence
                     foreach (Question q in lQuestions)
-                    { echo += q.QuexId; }
+                    {
+                        if (q.Id < 300)
+                            q.QuexText = q.QuexText.Replace("[client]", Client);
+                        echo += q.QuexId;
+                    }
                 }
 
             }
