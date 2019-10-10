@@ -32,7 +32,7 @@ namespace CoCAPI.Controllers
                 { }
                 else if (TreatmentType == 1) // Extension
                 {
-                    exclude = "";
+                    exclude = "2";
                     ShowQuestions = true;
                 }
                 else if (TreatmentType == 2) // Continuation
@@ -44,12 +44,12 @@ namespace CoCAPI.Controllers
                     DateTime dProgramStartDateMinus180 = dProgramStartDate.AddDays(-180);
                     if (dEntryDate <= dProgramStartDatePlus180)
                     {
-                        exclude = "345";
+                        exclude = "2345";
                         ShowQuestions = true;
                     }
                     else if (Client.Equals("BCBSMA") && dEntryDate > dProgramStartDate) // BCBSMA
                     {
-                        exclude = "345";
+                        exclude = "1345";
                         ShowQuestions = true;
                     }
                     // figure out what scenario we have from the dates passed in
@@ -161,12 +161,12 @@ namespace CoCAPI.Controllers
             result.CoCDetermination = "Not Met";
             if (obj.TreatmentType == 0)
                 result.CoCDetermination = "N/A";
-            else if (obj.TreatmentType == 1 && one > 1 && two > 0)
+            else if (obj.TreatmentType == 1 && one > 0 && two > 0)
             {
                 result.LevelOne = "Met";
                 result.CoCDetermination = "Clinical";
             }
-            else if (obj.TreatmentType == 2 && one > 1)
+            else if (obj.TreatmentType == 2 && one > 0)
             {
                 result.LevelOne = "Met";
                 result.LevelTwo = "Met";
